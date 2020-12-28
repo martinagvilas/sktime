@@ -189,8 +189,7 @@ class RotationForestClassifier(BaseClassifier, ForestClassifier):
         """Helper function to normalise X using the z-score standardisation"""
         # Xt = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         scaler = StandardScaler(with_mean=True, with_std=True)
-        Xt = scaler.fit_transform(X)
-        return Xt
+        return scaler.fit_transform(X)
 
     def predict_proba(self, X):
         """Predict probabilities"""

@@ -700,9 +700,11 @@ def load_from_arff_to_dataframe(full_file_path_and_name, has_class_labels=True,
         for line in f:
 
             if line.strip():
-                if is_multi_variate is False and "@attribute" in line.lower(
-
-                ) and "relational" in line.lower():
+                if (
+                    not is_multi_variate
+                    and "@attribute" in line.lower()
+                    and "relational" in line.lower()
+                ):
                     is_multi_variate = True
 
                 if "@data" in line.lower():
@@ -722,7 +724,7 @@ def load_from_arff_to_dataframe(full_file_path_and_name, has_class_labels=True,
                         dimensions[0] = dimensions[0].replace("'", "")
 
                         if is_first_case:
-                            for d in range(len(dimensions)):
+                            for _ in range(len(dimensions)):
                                 instance_list.append([])
                             is_first_case = False
 
@@ -799,15 +801,15 @@ def from_long_to_nested(long_dataframe):
     # aligning output later
     # (i.e. two stores required: one for reading id/timestamp and one for
     # value)
-    for d in range(0, num_dims):
+    for d in range(num_dims):
         data_by_dim.append([])
         indices.append([])
-        for c in range(0, len(unique_case_ids)):
+        for _ in range(len(unique_case_ids)):
             data_by_dim[d].append([])
             indices[d].append([])
 
     # go through every row in the dataframe
-    for i in range(0, len(long_dataframe)):
+    for i in range(len(long_dataframe)):
         # extract the relevant data, catch cases where the dim id is not an
         # int as it must be the class
 
@@ -820,10 +822,10 @@ def from_long_to_nested(long_dataframe):
         indices[dim_id][case_id].append(reading_id)
 
     x_data = {}
-    for d in range(0, num_dims):
+    for d in range(num_dims):
         key = 'dim_' + str(d)
         dim_list = []
-        for i in range(0, len(unique_case_ids)):
+        for i in range(len(unique_case_ids)):
             temp = pd.Series(data_by_dim[d][i], indices[d][i])
             dim_list.append(temp)
         x_data[key] = pd.Series(dim_list)

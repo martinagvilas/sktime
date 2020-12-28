@@ -179,18 +179,15 @@ class ThetaForecaster(ExponentialSmoothing):
     def _compute_drift(self):
         if np.isclose(self.smoothing_level_, 0.0):
             # SES was constant, so revert to simple trend
-            drift = self.trend_ * self.fh
-        else:
-            # Calculate drift from SES parameters
-            n_timepoints = len(self._y)
-            drift = self.trend_ * (
+            return self.trend_ * self.fh
+        # Calculate drift from SES parameters
+        n_timepoints = len(self._y)
+        return self.trend_ * (
                     self.fh
                     + (1 - (
                         1 - self.smoothing_level_) ** n_timepoints) /
                     self.smoothing_level_
             )
-
-        return drift
 
     def _compute_pred_err(self, alphas):
         """

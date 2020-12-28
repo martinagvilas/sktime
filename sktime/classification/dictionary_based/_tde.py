@@ -156,8 +156,7 @@ class TemporalDictionaryEnsemble(BaseClassifier):
         max_window_searches = self.series_length / 4
         max_window = int(self.series_length * self.max_win_len_prop)
         win_inc = int((max_window - self.min_window) / max_window_searches)
-        if win_inc < 1:
-            win_inc = 1
+        win_inc = max(win_inc, 1)
 
         possible_parameters = self._unique_parameters(max_window, win_inc)
         num_classifiers = 0
@@ -235,12 +234,10 @@ class TemporalDictionaryEnsemble(BaseClassifier):
 
         for n, clf in enumerate(self.classifiers):
             preds = clf.predict(X)
-            for i in range(0, X.shape[0]):
+            for i in range(X.shape[0]):
                 sums[i, self.class_dictionary[preds[i]]] += self.weights[n]
 
-        dists = sums / (np.ones(self.n_classes) * self.weight_sum)
-
-        return dists
+        return sums / (np.ones(self.n_classes) * self.weight_sum)
 
     def _worst_ensemble_acc(self):
         min_acc = -1
@@ -271,15 +268,13 @@ class TemporalDictionaryEnsemble(BaseClassifier):
         return results
 
     def _unique_parameters(self, max_window, win_inc):
-        possible_parameters = [[win_size, word_len, normalise, levels, igb]
+        return [[win_size, word_len, normalise, levels, igb]
                                for n, normalise in enumerate(self.norm_options)
                                for win_size in
                                range(self.min_window, max_window + 1, win_inc)
                                for w, word_len in enumerate(self.word_lengths)
                                for le, levels in enumerate(self.levels)
                                for i, igb in enumerate(self.igb_options)]
-
-        return possible_parameters
 
     def _individual_train_acc(self, tde, y, train_size, lowest_acc):
         correct = 0
@@ -382,7 +377,7 @@ class IndividualTDE(BaseClassifier):
         preds = self.predict(X)
         dists = np.zeros((X.shape[0], self.num_classes))
 
-        for i in range(0, X.shape[0]):
+        for i in range(X.shape[0]):
             dists[i, self.class_dictionary.get(preds[i])] += 1
 
         return dists

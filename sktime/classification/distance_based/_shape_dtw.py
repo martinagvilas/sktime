@@ -195,7 +195,7 @@ class ShapeDTW(BaseClassifier):
             sl = self.subsequence_length
             sdf = self.shape_descriptor_function
             sdfs = self.shape_descriptor_functions
-            if sdfs is None or not (len(sdfs) == 2):
+            if sdfs is None or len(sdfs) != 2:
                 raise ValueError("When using 'compound', " +
                                  "shape_descriptor_functions must be a " +
                                  "string array of length 2.")
@@ -283,7 +283,7 @@ class ShapeDTW(BaseClassifier):
             self.transformer = []
             for x in self.shape_descriptor_functions:
                 self.transformer.append(self._get_transformer(x))
-            if not (len(self.transformer) == 2):
+            if len(self.transformer) != 2:
                 raise ValueError("When using 'compound', " +
                                  "shape_descriptor_functions must be a " +
                                  "string array of length 2.")
@@ -411,7 +411,7 @@ class ShapeDTW(BaseClassifier):
         names = list(parameters.keys())
 
         for x in names:
-            if not (x in valid_metric_params):
+            if x not in valid_metric_params:
                 raise ValueError(x + " is not a valid metric parameter." +
                                  "Make sure the shape descriptor function" +
                                  " name is at the end of the metric " +

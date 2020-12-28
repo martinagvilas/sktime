@@ -226,7 +226,7 @@ class Orchestrator:
 
         # Check uniqueness of strategy names
         names = [strategy.name for strategy in strategies]
-        if not len(names) == len(set(names)):
+        if len(names) != len(set(names)):
             raise ValueError(f"Names of provided strategies are not unique: "
                              f"{names}")
 

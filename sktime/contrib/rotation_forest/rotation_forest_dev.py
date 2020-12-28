@@ -113,8 +113,7 @@ class RotationForest(ForestClassifier):
 
     def addRandomInstance(self, data, num_instances):
         random_instances = np.random.random_sample((num_instances,data.shape[1]))
-        output = np.concatenate([data,random_instances])
-        return output
+        return np.concatenate([data,random_instances])
 
     def convertData(self, X, i):
        return np.array([self.createRow(row,i) for row in X])
@@ -130,7 +129,7 @@ class RotationForest(ForestClassifier):
         numSelected = 0
         selected = np.zeros(self._num_classes, dtype=np.bool)
 
-        for i in range(0,self._num_classes):
+        for i in range(self._num_classes):
             if random.choice([True,False]):
                 selected[i] = True
                 numSelected +=1
@@ -165,14 +164,14 @@ class RotationForest(ForestClassifier):
         currentSize = 0
 
         Groups = []
-        for j in range(0, numGroups):
+        for j in range(numGroups):
             while numGroupsOfSize[currentSize] == 0:
                 currentSize +=1
             numGroupsOfSize[currentSize] -=1
 
             n = self.minGroup + currentSize
             Groups.append(np.zeros(n))
-            for k in range(0,n):
+            for k in range(n):
                 if currentAttribute < perm_length:
                     Groups[j][k] = permutation[currentAttribute]
                 else:

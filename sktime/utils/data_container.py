@@ -201,14 +201,13 @@ def concat_nested_arrays(arrs, return_arrays=False):
         Transformed dataframe with nested column for each input array.
     """
     if return_arrays:
-        Xt = pd.DataFrame(np.column_stack(
+        return pd.DataFrame(np.column_stack(
             [pd.Series([np.array(vals) for vals in interval])
              for interval in arrs]))
     else:
-        Xt = pd.DataFrame(np.column_stack(
+        return pd.DataFrame(np.column_stack(
             [pd.Series([pd.Series(vals) for vals in interval])
              for interval in arrs]))
-    return Xt
 
 
 def get_time_index(X):

@@ -21,8 +21,7 @@ class BagOfPatterns(BaseEstimator):
         series_length = X.iloc[0, 0].shape[0]
         max_window_searches = series_length / 4
         win_inc = int((series_length - 10) / max_window_searches)
-        if win_inc < 1:
-            win_inc = 1
+        win_inc = max(win_inc, 1)
         window_sizes = [win_size for win_size in range(10, series_length + 1, win_inc)]
 
         cv_params = {

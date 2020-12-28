@@ -126,7 +126,7 @@ class FeatureUnion(_FeatureUnion, BaseEstimator, MetaEstimatorMixin):
         if any(sparse.issparse(f) for f in Xs):
             Xs = sparse.hstack(Xs).tocsr()
 
-        types = set(type(X) for X in Xs)
+        types = {type(X) for X in Xs}
         if self.preserve_dataframe and (
                 pd.Series in types or pd.DataFrame in types):
             return pd.concat(Xs, axis=1)

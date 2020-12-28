@@ -98,16 +98,14 @@ def test_RowTransformer_pipeline():
     def row_mean(X):
         if isinstance(X, pd.Series):
             X = pd.DataFrame(X)
-        Xt = pd.concat([pd.Series(col.apply(np.mean))
+        return pd.concat([pd.Series(col.apply(np.mean))
                         for _, col in X.items()], axis=1)
-        return Xt
 
     def row_first(X):
         if isinstance(X, pd.Series):
             X = pd.DataFrame(X)
-        Xt = pd.concat([pd.Series(tabularize(col).iloc[:, 0])
+        return pd.concat([pd.Series(tabularize(col).iloc[:, 0])
                         for _, col in X.items()], axis=1)
-        return Xt
 
     # specify column as a list, otherwise pandas Series are selected and
     # passed on to the transformers

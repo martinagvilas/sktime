@@ -85,7 +85,7 @@ class DWTTransformer(BaseSeriesAsFeaturesTransformer):
                 coeffs = []
                 current = x
                 approx = None
-                for lev in range(num_levels):
+                for _ in range(num_levels):
                     approx = self._get_approx_coefficients(current)
                     wav_coeffs = self._get_wavelet_coefficients(current)
                     current = approx
@@ -119,21 +119,21 @@ class DWTTransformer(BaseSeriesAsFeaturesTransformer):
         """
         Function to get the approximate coefficients at a given level.
         """
-        new = []
         if len(arr) == 1:
             return [arr[0]]
-        for x in range(math.floor(len(arr)/2)):
-            new.append((arr[2*x]+arr[2*x+1])/math.sqrt(2))
-        return new
+        return [
+            (arr[2 * x] + arr[2 * x + 1]) / math.sqrt(2)
+            for x in range(math.floor(len(arr) / 2))
+        ]
 
     def _get_wavelet_coefficients(self, arr):
         """
         Function to get the wavelet coefficients at a given level.
         """
-        new = []
         # if length is 1, just return the list back
         if len(arr) == 1:
             return [arr[0]]
-        for x in range(math.floor(len(arr)/2)):
-            new.append((arr[2*x]-arr[2*x+1])/math.sqrt(2))
-        return new
+        return [
+            (arr[2 * x] - arr[2 * x + 1]) / math.sqrt(2)
+            for x in range(math.floor(len(arr) / 2))
+        ]

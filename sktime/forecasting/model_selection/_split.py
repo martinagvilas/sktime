@@ -151,11 +151,10 @@ class BaseWindowSplitter(BaseSplitter):
             end = n_timepoints - fh_max + 1  #  non-inclusive end indexing
 
             # check if computed values are feasible with the provided index
-            if window_length is not None:
-                if window_length + fh_max > n_timepoints:
-                    raise ValueError(
-                        "The window length and forecasting horizon are "
-                        "incompatible with the length of `y`")
+            if window_length is not None and window_length + fh_max > n_timepoints:
+                raise ValueError(
+                    "The window length and forecasting horizon are "
+                    "incompatible with the length of `y`")
         return end
 
 

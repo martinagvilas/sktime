@@ -110,19 +110,13 @@ class HDDResults(HDDBaseResults):
                                      cv_fold):
         path = self._generate_key(strategy_name, dataset_name, cv_fold,
                                   train_or_test="train") + ".pickle"
-        if os.path.isfile(path):
-            return True
-        else:
-            return False
+        return bool(os.path.isfile(path))
 
     def check_predictions_exist(self, strategy_name, dataset_name, cv_fold,
                                 train_or_test):
         path = self._generate_key(strategy_name, dataset_name, cv_fold,
                                   train_or_test) + ".csv"
-        if os.path.isfile(path):
-            return True
-        else:
-            return False
+        return bool(os.path.isfile(path))
 
     def _generate_key(self, strategy_name, dataset_name, cv_fold,
                       train_or_test):

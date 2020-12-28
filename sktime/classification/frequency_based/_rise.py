@@ -130,19 +130,17 @@ class RandomIntervalSpectralForest(ForestClassifier, BaseClassifier):
         if self.acf_lag < 0:
             self.acf_lag_ = 1
         self.lags = np.zeros(self.n_estimators, dtype=int)
-        for i in range(0, self.n_estimators):
+        for i in range(self.n_estimators):
             temp_lag = self.acf_lag_
-            if (temp_lag > self.intervals[i][1] - self.intervals[i][0]
-                    - self.acf_min_values):
-                temp_lag = self.intervals[i][1] - self.intervals[i][
-                    0] - self.acf_min_values
+            temp_lag = min(temp_lag, self.intervals[i][1] - self.intervals[i][0]
+                    - self.acf_min_values)
             if temp_lag < 0:
                 temp_lag = 1
             self.lags[i] = int(temp_lag)
             acf_x = np.empty(shape=(n_instances, self.lags[i]))
             ps_len = (self.intervals[i][1] - self.intervals[i][0]) / 2
             ps_x = np.empty(shape=(n_instances, int(ps_len)))
-            for j in range(0, n_instances):
+            for j in range(n_instances):
                 acf_x[j] = acf(X[j, self.intervals[i][0]:self.intervals[i][1]],
                                temp_lag)
                 ps_x[j] = ps(X[j, self.intervals[i][0]:self.intervals[i][1]])
@@ -200,19 +198,18 @@ class RandomIntervalSpectralForest(ForestClassifier, BaseClassifier):
                 "that in the test data")
         sums = np.zeros((X.shape[0], self.n_classes), dtype=np.float64)
 
-        for i in range(0, self.n_estimators):
+        for i in range(self.n_estimators):
             acf_x = np.empty(shape=(n_cases, self.lags[i]))
             ps_len = (self.intervals[i][1] - self.intervals[i][0]) / 2
             ps_x = np.empty(shape=(n_cases, int(ps_len)))
-            for j in range(0, n_cases):
+            for j in range(n_cases):
                 acf_x[j] = acf(X[j, self.intervals[i][0]:self.intervals[i][1]],
                                self.lags[i])
                 ps_x[j] = ps(X[j, self.intervals[i][0]:self.intervals[i][1]])
             transformed_x = np.concatenate((acf_x, ps_x), axis=1)
             sums += self.estimators_[i].predict_proba(transformed_x)
 
-        output = sums / (np.ones(self.n_classes) * self.n_estimators)
-        return output
+        return sums / (np.ones(self.n_classes) * self.n_estimators)
 
 
 def acf(x, max_lag):

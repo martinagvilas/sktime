@@ -139,7 +139,7 @@ class ColumnTransformer(_ColumnTransformer, BaseSeriesAsFeaturesTransformer,
         Supports input types (X): list of numpy arrays, sparse arrays and
         DataFrames
         """
-        types = set(type(X) for X in Xs)
+        types = {type(X) for X in Xs}
 
         if self.sparse_output_:
             return sparse.hstack(Xs).tocsr()

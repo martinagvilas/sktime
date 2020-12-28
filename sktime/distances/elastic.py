@@ -85,11 +85,8 @@ def derivative_dtw_distance(first, second, **kwargs):
     if isinstance(first, np.ndarray) and isinstance(first[0], float) is True:
         return dtw_distance(np.diff(first), np.diff(second), **kwargs)
 
-    dist = 0
-    for dim in range(0, len(first)):
-        dist += dtw_distance([first[dim].diff()[1:]], [second[dim].diff()[1:]],
-                             **kwargs)
-    return dist
+    return sum(dtw_distance([first[dim].diff()[1:]], [second[dim].diff()[1:]],
+                             **kwargs) for dim in range(len(first)))
 
 
 def weighted_dtw_distance(first, second, **kwargs):
@@ -148,11 +145,12 @@ def weighted_derivative_dtw_distance(first, second, **kwargs):
     if isinstance(first, np.ndarray) and isinstance(first[0], float) is True:
         return weighted_dtw_distance(np.diff(first), np.diff(second), **kwargs)
 
-    dist = 0
-    for dim in range(0, len(first)):
-        dist += weighted_dtw_distance([first[dim].diff()[1:]],
-                                      [second[dim].diff()[1:]], **kwargs)
-    return dist
+    return sum(
+        weighted_dtw_distance(
+            [first[dim].diff()[1:]], [second[dim].diff()[1:]], **kwargs
+        )
+        for dim in range(len(first))
+    )
 
 
 def lcss_distance(first, second, **kwargs):
@@ -172,7 +170,7 @@ def lcss_distance(first, second, **kwargs):
 
         lcss = np.zeros([m + 1, n + 1])
 
-        for i in range(0, m):
+        for i in range(m):
             # for (int j = i-delta j <= i+delta j++){
             for j in range(i - delta, i + delta + 1):
                 if j < 0:
@@ -298,18 +296,16 @@ def erp_distance(first, second, **kwargs):
         curr = np.empty(m)
         prev = np.empty(m)
 
-        for i in range(0, m):
+        for i in range(m):
             temp = prev
             prev = curr
             curr = temp
             ll = i - (band + 1)
 
-            if ll < 0:
-                ll = 0
+            ll = max(ll, 0)
 
             r = i + (band + 1)
-            if r > m - 1:
-                r = (m - 1)
+            r = min(r, m - 1)
 
             for j in range(ll, r + 1):
                 if np.abs(i - j) <= band:
@@ -342,11 +338,11 @@ def erp_distance(first, second, **kwargs):
                                                                    dist1)))):
                             # del
                             cost = curr[j - 1] + dist2
-                        elif ((j == 0) or
-                              ((i != 0) and
-                               (((prev[j - 1] + dist12) > (prev[j] + dist1))
-                                and ((prev[j] + dist1) < (curr[j - 1]
-                                                          + dist2))))):
+                        elif (
+                            j == 0
+                            or (prev[j - 1] + dist12) > (prev[j] + dist1)
+                            and (prev[j] + dist1) < (curr[j - 1] + dist2)
+                        ):
                             # ins
                             cost = prev[j] + dist1
                         else:

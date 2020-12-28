@@ -164,7 +164,6 @@ def boxcox(x, lmbda=None, bounds=None, alpha=None):
 
     if alpha is None:
         return y, lmax
-    else:
-        # Find confidence interval
-        interval = _boxcox_conf_interval(x, lmax, alpha)
-        return y, lmax, interval
+    # Find confidence interval
+    interval = _boxcox_conf_interval(x, lmax, alpha)
+    return y, lmax, interval

@@ -68,12 +68,11 @@ def _make_args(estimator, method, *args, **kwargs):
 
     elif method == "inverse_transform":
         args = _make_transform_args(estimator, *args, **kwargs)
-        if isinstance(estimator, Tabularizer):
-            X, y = args
-            return tabularize(X), y
-        else:
+        if not isinstance(estimator, Tabularizer):
             return args
 
+        X, y = args
+        return tabularize(X), y
     else:
         raise ValueError(f"Method: {method} not supported")
 
@@ -137,7 +136,7 @@ def _assert_almost_equal(x, y, decimal=6, err_msg="", verbose=True):
 
     if is_nested_dataframe(x):
         # make sure both inputs have the same shape
-        if not x.shape == y.shape:
+        if x.shape != y.shape:
             raise ValueError("Found inputs with different shapes")
 
         # iterate over columns

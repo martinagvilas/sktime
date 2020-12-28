@@ -614,10 +614,7 @@ class BaseWindowForecaster(BaseSktimeForecaster):
 
         # if exogenous variables are given, also get the last window of
         # those
-        if self._X is not None:
-            X = self._X.loc[start:end].to_numpy()
-        else:
-            X = None
+        X = self._X.loc[start:end].to_numpy() if self._X is not None else None
         return y, X
 
     @staticmethod
@@ -663,10 +660,9 @@ def _format_moving_cutoff_predictions(y_preds, cutoffs):
         # return series for single step ahead predictions
         return pd.concat(y_preds)
 
-    else:
-        # return data frame when we predict multiple steps ahead
-        y_pred = pd.DataFrame(y_preds).T
-        y_pred.columns = cutoffs
-        if y_pred.shape[1] == 1:
-            return y_pred.iloc[:, 0]
-        return y_pred
+    # return data frame when we predict multiple steps ahead
+    y_pred = pd.DataFrame(y_preds).T
+    y_pred.columns = cutoffs
+    if y_pred.shape[1] == 1:
+        return y_pred.iloc[:, 0]
+    return y_pred

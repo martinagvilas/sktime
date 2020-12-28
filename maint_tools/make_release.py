@@ -329,8 +329,7 @@ def main():
         CheckOnlineDocs(),
         CheckPyPIFiles()
     ]
-    context = dict()
-    context["package_name"] = PACKAGE_NAME
+    context = {"package_name": PACKAGE_NAME}
     context["version"] = find_version(context["package_name"], "__init__.py")
     context["testdir"] = "temp/"
     for step in steps:

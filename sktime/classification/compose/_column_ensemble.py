@@ -168,8 +168,7 @@ class BaseColumnEnsembleClassifier(BaseClassifier,
     def predict_proba(self, X):
         """Predict class probabilities for X in 'soft' voting """
         self.check_is_fitted()
-        avg = np.average(self._collect_probas(X), axis=0)
-        return avg
+        return np.average(self._collect_probas(X), axis=0)
 
     def predict(self, X):
         maj = np.argmax(self.predict_proba(X), axis=1)

@@ -308,19 +308,18 @@ class TimeSeriesForestClassifier(BaseTimeSeriesForest, BaseClassifier):
         if self.n_outputs_ == 1:
             return self.classes_.take(np.argmax(proba, axis=1), axis=0)
 
-        else:
-            n_samples = proba[0].shape[0]
-            # all dtypes should be the same, so just take the first
-            class_type = self.classes_[0].dtype
-            predictions = np.empty((n_samples, self.n_outputs_),
-                                   dtype=class_type)
+        n_samples = proba[0].shape[0]
+        # all dtypes should be the same, so just take the first
+        class_type = self.classes_[0].dtype
+        predictions = np.empty((n_samples, self.n_outputs_),
+                               dtype=class_type)
 
-            for k in range(self.n_outputs_):
-                predictions[:, k] = self.classes_[k].take(np.argmax(proba[k],
-                                                                    axis=1),
-                                                          axis=0)
+        for k in range(self.n_outputs_):
+            predictions[:, k] = self.classes_[k].take(np.argmax(proba[k],
+                                                                axis=1),
+                                                      axis=0)
 
-            return predictions
+        return predictions
 
     def predict_log_proba(self, X):
         """
@@ -346,11 +345,10 @@ class TimeSeriesForestClassifier(BaseTimeSeriesForest, BaseClassifier):
         if self.n_outputs_ == 1:
             return np.log(proba)
 
-        else:
-            for k in range(self.n_outputs_):
-                proba[k] = np.log(proba[k])
+        for k in range(self.n_outputs_):
+            proba[k] = np.log(proba[k])
 
-            return proba
+        return proba
 
     def predict_proba(self, X):
         """Predict class probabilities for X.
@@ -455,8 +453,8 @@ class TimeSeriesForestClassifier(BaseTimeSeriesForest, BaseClassifier):
         y = y_store_unique_indices
 
         if self.class_weight is not None:
-            valid_presets = ('balanced', 'balanced_subsample')
             if isinstance(self.class_weight, str):
+                valid_presets = ('balanced', 'balanced_subsample')
                 if self.class_weight not in valid_presets:
                     raise ValueError('Valid presets for class_weight include '
                                      '"balanced" and "balanced_subsample".'

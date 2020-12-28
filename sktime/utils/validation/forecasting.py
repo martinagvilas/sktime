@@ -78,9 +78,8 @@ def check_y(y, allow_empty=False, allow_constant=True):
                 f"empty series: {y}.")
 
     else:
-        if not allow_constant:
-            if np.all(y == y.iloc[0]):
-                raise ValueError("All values of `y` are the same.")
+        if not allow_constant and np.all(y == y.iloc[0]):
+            raise ValueError("All values of `y` are the same.")
 
     # check time index
     check_time_index(y.index)
@@ -159,21 +158,23 @@ def check_X(X):
 
 def check_window_length(window_length):
     """Validate window length"""
-    if window_length is not None:
-        if not is_int(window_length) or window_length < 1:
-            raise ValueError(
-                f"`window_length_` must be a positive integer >= 1 or None, "
-                f"but found: {window_length}")
+    if window_length is not None and (
+        not is_int(window_length) or window_length < 1
+    ):
+        raise ValueError(
+            f"`window_length_` must be a positive integer >= 1 or None, "
+            f"but found: {window_length}")
     return window_length
 
 
 def check_step_length(step_length):
     """Validate window length"""
-    if step_length is not None:
-        if not is_int(step_length) or step_length < 1:
-            raise ValueError(
-                f"`step_length` must be a positive integer >= 1 or None, "
-                f"but found: {step_length}")
+    if step_length is not None and (
+        not is_int(step_length) or step_length < 1
+    ):
+        raise ValueError(
+            f"`step_length` must be a positive integer >= 1 or None, "
+            f"but found: {step_length}")
     return step_length
 
 
@@ -190,9 +191,8 @@ def check_sp(sp):
     sp : int
         Validated seasonal periodicity
     """
-    if sp is not None:
-        if not is_int(sp) or sp < 1:
-            raise ValueError("`sp` must be a positive integer >= 1 or None")
+    if sp is not None and (not is_int(sp) or sp < 1):
+        raise ValueError("`sp` must be a positive integer >= 1 or None")
     return sp
 
 
@@ -290,10 +290,10 @@ def check_cutoffs(cutoffs):
         raise ValueError(
             f"`cutoffs` must be a np.array, but found: {type(cutoffs)}")
 
-    if not all([is_int(cutoff) for cutoff in cutoffs]):
+    if not all(is_int(cutoff) for cutoff in cutoffs):
         raise ValueError("All cutoff points must be integers")
 
-    if not cutoffs.ndim == 1:
+    if cutoffs.ndim != 1:
         raise ValueError("`cutoffs must be 1-dimensional array")
 
     if not len(cutoffs) > 0:

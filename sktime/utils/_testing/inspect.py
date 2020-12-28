@@ -22,7 +22,7 @@ def _get_args(function, varargs=False):
     if varargs:
         varargs = [param.name for param in params.values()
                    if param.kind == param.VAR_POSITIONAL]
-        if len(varargs) == 0:
+        if not varargs:
             varargs = None
         return args, varargs
     else:

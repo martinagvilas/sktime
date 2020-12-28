@@ -29,7 +29,7 @@ def check_window_properties(windows, allow_empty=False):
     assert isinstance(windows, list)
     for window in windows:
         assert isinstance(window, np.ndarray)
-        assert all([is_int(idx) for idx in window])
+        assert all(is_int(idx) for idx in window)
         assert window.ndim == 1
         if not allow_empty:
             assert len(window) > 0
@@ -38,7 +38,7 @@ def check_window_properties(windows, allow_empty=False):
 def check_cutoff_properties(cutoffs):
     """Helper function to test common properties of cutoffs"""
     assert isinstance(cutoffs, np.ndarray)
-    assert all([is_int(cutoff) for cutoff in cutoffs])
+    assert all(is_int(cutoff) for cutoff in cutoffs)
     assert cutoffs.ndim == 1
     assert len(cutoffs) > 0
 
@@ -80,11 +80,7 @@ def generate_and_check_windows(y, cv):
 
 
 def get_n_incomplete_windows(windows, window_length):
-    n = 0
-    for window in windows:
-        if len(window) < window_length:
-            n += 1
-    return n
+    return sum(len(window) < window_length for window in windows)
 
 
 def check_windows_dimensions(windows, n_incomplete_windows, window_length):

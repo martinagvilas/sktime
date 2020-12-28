@@ -88,7 +88,7 @@ class BaseTSFreshFeatureExtractor(BaseSeriesAsFeaturesTransformer):
         }
 
         # Replace defaults with user defined parameters
-        for name in extraction_params.keys():
+        for name in extraction_params:
             if hasattr(self, name):
                 value = getattr(self, name)
                 if value is not None:
@@ -240,7 +240,7 @@ class TSFreshRelevantFeatureExtractor(BaseTSFreshFeatureExtractor):
         }
 
         # Replace defaults with user defined parameters
-        for name in selection_params.keys():
+        for name in selection_params:
             value = getattr(self, name)
             if value is not None:
                 selection_params[name] = value

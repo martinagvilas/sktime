@@ -198,7 +198,7 @@ class _BitWord(object):
         word_list = []
         shift = 32 - (length * 2)
 
-        for i in range(length - 1, -1, -1):
+        for _ in range(length - 1, -1, -1):
             word_list.append(cls.right_shift(word << shift, 32 - 2))
             shift += 2
 

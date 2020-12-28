@@ -22,10 +22,7 @@ def dtw_distance(first, second, **kwargs):
         m = len(second)
 
         warp_matrix = np.full([n, m], np.inf)
-        if n > m:
-            window_size = n * window
-        else:
-            window_size = m * window
+        window_size = n * window if n > m else m * window
         window_size = int(window_size)
 
         dist = lambda x1, x2: ((x1 - x2) ** 2)
@@ -61,7 +58,7 @@ def dtw_distance(first, second, **kwargs):
 
             # if using a cutoff, at least one calculated value on this row MUST be less than the cutoff otherwise the
             # final distance is guaranteed not to be less. Therefore, if the cutoff has not been beaten, early-abandon
-            if cutoff is not None and cutoff_beaten is False:
+            if cutoff is not None and not cutoff_beaten:
                 return float("inf")
 
         return warp_matrix[n - 1][m - 1]
@@ -81,10 +78,12 @@ def derivative_dtw_distance(first, second, **kwargs):
     if isinstance(first, np.ndarray) and isinstance(first[0], float) is True:
         return dtw_distance(np.diff(first), np.diff(second), **kwargs)
 
-    dist = 0
-    for dim in range(0, len(first)):
-        dist += dtw_distance([first[dim].diff()[1:]], [second[dim].diff()[1:]], **kwargs)
-    return dist
+    return sum(
+        dtw_distance(
+            [first[dim].diff()[1:]], [second[dim].diff()[1:]], **kwargs
+        )
+        for dim in range(len(first))
+    )
 
 
 def weighted_dtw_distance(first, second, **kwargs):
@@ -98,7 +97,7 @@ def weighted_dtw_distance(first, second, **kwargs):
         m = len(first);
         n = len(second);
 
-        weight_vector = [1/(1+np.exp(-g*(i-m/2))) for i in range(0,m)]
+        weight_vector = [1/(1+np.exp(-g*(i-m/2))) for i in range(m)]
 
         dist = lambda x1, x2: ((x1 - x2) ** 2)
         pairwise_distances = np.asarray([[dist(x1, x2) for x2 in second] for x1 in first])
@@ -137,10 +136,12 @@ def weighted_derivative_dtw_distance(first, second, **kwargs):
     if isinstance(first, np.ndarray) and isinstance(first[0], float) is True:
         return weighted_dtw_distance(np.diff(first), np.diff(second), **kwargs)
 
-    dist = 0
-    for dim in range(0, len(first)):
-        dist += weighted_dtw_distance([first[dim].diff()[1:]], [second[dim].diff()[1:]], **kwargs)
-    return dist
+    return sum(
+        weighted_dtw_distance(
+            [first[dim].diff()[1:]], [second[dim].diff()[1:]], **kwargs
+        )
+        for dim in range(len(first))
+    )
 
 
 def lcss_distance(first, second, **kwargs):
@@ -161,7 +162,7 @@ def lcss_distance(first, second, **kwargs):
 
         lcss = np.zeros([m + 1, n + 1])
 
-        for i in range(0, m):
+        for i in range(m):
             # for (int j = i-delta; j <= i+delta; j++){
             for j in range(i - delta, i + delta + 1):
                 if j < 0:
@@ -281,18 +282,16 @@ def erp_distance(first, second, **kwargs):
         curr = np.empty(m)
         prev = np.empty(m)
 
-        for i in range(0, m):
+        for i in range(m):
             temp = prev
             prev = curr
             curr = temp
             l = i - (band + 1)
 
-            if l < 0:
-                l = 0
+            l = max(l, 0)
 
             r = i + (band + 1);
-            if r > m - 1:
-                r = (m - 1)
+            r = min(r, m - 1)
 
             for j in range(l, r + 1):
                 if np.abs(i - j) <= band:
@@ -319,7 +318,11 @@ def erp_distance(first, second, **kwargs):
                         if i == 0 or (j != 0 and (((prev[j - 1] + dist12) > (curr[j - 1] + dist2)) and ((curr[j - 1] + dist2) < (prev[j] + dist1)))):
                             # del
                             cost = curr[j - 1] + dist2
-                        elif (j == 0) or ((i != 0) and (((prev[j - 1] + dist12) > (prev[j] + dist1)) and ((prev[j] + dist1) < (curr[j - 1] + dist2)))):
+                        elif (
+                            j == 0
+                            or (prev[j - 1] + dist12) > (prev[j] + dist1)
+                            and (prev[j] + dist1) < (curr[j - 1] + dist2)
+                        ):
                             # ins
                             cost = prev[j] + dist1;
                         else:

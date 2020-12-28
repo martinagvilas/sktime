@@ -139,8 +139,7 @@ class TimeSeriesForest(ForestClassifier, BaseClassifier):
                     self.series_length - self.min_interval)
                 length = rng.randint(
                     self.series_length - self.intervals[i][j][0] - 1)
-                if length < self.min_interval:
-                    length = self.min_interval
+                length = max(length, self.min_interval)
                 self.intervals[i][j][1] = self.intervals[i][j][0] + length
                 # Transforms here, just hard coding it, so not configurable
                 means = np.mean(
@@ -214,11 +213,11 @@ class TimeSeriesForest(ForestClassifier, BaseClassifier):
                 " ERROR number of attributes in the train does not match "
                 "that in the test data")
         sums = np.zeros((X.shape[0], self.n_classes), dtype=np.float64)
-        for i in range(0, self.n_estimators):
+        for i in range(self.n_estimators):
             transformed_x = np.empty(
                 shape=(3 * self.n_intervals, n_test_instances),
                 dtype=np.float32)
-            for j in range(0, self.n_intervals):
+            for j in range(self.n_intervals):
                 means = np.mean(
                     X[:, self.intervals[i][j][0]:self.intervals[i][j][1]],
                     axis=1)
@@ -233,8 +232,7 @@ class TimeSeriesForest(ForestClassifier, BaseClassifier):
             transformed_x = transformed_x.T
             sums += self.classifiers[i].predict_proba(transformed_x)
 
-        output = sums / (np.ones(self.n_classes) * self.n_estimators)
-        return output
+        return sums / (np.ones(self.n_classes) * self.n_estimators)
 
     def _lsq_fit(self, Y):
         """ Find the slope for each series (row) of Y
@@ -248,6 +246,5 @@ class TimeSeriesForest(ForestClassifier, BaseClassifier):
 
         """
         x = np.arange(Y.shape[1]) + 1
-        slope = (np.mean(x * Y, axis=1) - np.mean(x) * np.mean(Y, axis=1)) / (
+        return (np.mean(x * Y, axis=1) - np.mean(x) * np.mean(Y, axis=1)) / (
                 (x * x).mean() - x.mean() ** 2)
-        return slope

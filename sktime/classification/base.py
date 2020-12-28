@@ -36,7 +36,7 @@ class BaseClassifier(BaseEstimator):
         self.check_is_fitted()
         distributions = self.predict_proba(X)
         predictions = []
-        for instance_index in range(0, X.shape[0]):
+        for instance_index in range(X.shape[0]):
             distribution = distributions[instance_index]
             prediction = comparison.arg_max(distribution, self.random_state)
             predictions.append(prediction)

@@ -122,7 +122,7 @@ def _generate_kernels(n_timepoints, num_kernels, n_columns, seed):
         b2 = a2 + _num_channel_indices
 
         a3 = 0  # for weights (per channel)
-        for j in range(_num_channel_indices):
+        for _ in range(_num_channel_indices):
             b3 = a3 + _length
             _weights[a3:b3] = _weights[a3:b3] - _weights[a3:b3].mean()
             a3 = b3

@@ -299,12 +299,10 @@ class BOSSEnsemble(BaseClassifier):
 
         for n, clf in enumerate(self.classifiers):
             preds = clf.predict(X)
-            for i in range(0, X.shape[0]):
+            for i in range(X.shape[0]):
                 sums[i, self.class_dictionary[preds[i]]] += self.weights[n]
 
-        dists = sums / (np.ones(self.n_classes) * self.weight_sum)
-
-        return dists
+        return sums / (np.ones(self.n_classes) * self.weight_sum)
 
     def _include_in_ensemble(self, acc, max_acc, min_max_acc, size):
         if acc >= max_acc * self.threshold:
@@ -343,13 +341,11 @@ class BOSSEnsemble(BaseClassifier):
         return results
 
     def _unique_parameters(self, max_window, win_inc):
-        possible_parameters = [[win_size, word_len, normalise] for n, normalise
+        return [[win_size, word_len, normalise] for n, normalise
                                in enumerate(self.norm_options)
                                for win_size in
                                range(self.min_window, max_window + 1, win_inc)
                                for g, word_len in enumerate(self.word_lengths)]
-
-        return possible_parameters
 
     def _individual_train_acc(self, boss, y, train_size, lowest_acc):
         correct = 0
@@ -450,7 +446,7 @@ class BOSSIndividual(BaseClassifier):
         preds = self.predict(X)
         dists = np.zeros((X.shape[0], self.num_classes))
 
-        for i in range(0, X.shape[0]):
+        for i in range(X.shape[0]):
             dists[i, self.class_dictionary.get(preds[i])] += 1
 
         return dists

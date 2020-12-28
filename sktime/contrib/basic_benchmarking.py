@@ -144,7 +144,7 @@ def powerspectrum(x, **kwargs):
 
 
 def tsf_benchmarking():
-    for i in range(0, len(benchmark_datasets)):
+    for i in range(len(benchmark_datasets)):
         dataset = benchmark_datasets[i]
         print(str(i) + " problem = " + dataset)
         tsf = ib.TimeSeriesForest(n_estimators=100)
@@ -174,7 +174,7 @@ def tsf_benchmarking():
 
 
 def rise_benchmarking():
-    for i in range(0, len(benchmark_datasets)):
+    for i in range(len(benchmark_datasets)):
         dataset = benchmark_datasets[i]
         print(str(i) + " problem = " + dataset)
         rise = fb.RandomIntervalSpectralForest(n_estimators=100)
@@ -202,7 +202,7 @@ def rise_benchmarking():
 
 
 def boss_benchmarking():
-    for i in range(0, int(len(benchmark_datasets))):
+    for i in range(int(len(benchmark_datasets))):
         dataset = benchmark_datasets[i]
         print(str(
             i) + " problem = " + dataset + " writing to " + results_dir +
@@ -221,7 +221,7 @@ distance_test = [
 
 
 def elastic_distance_benchmarking():
-    for i in range(0, int(len(distance_test))):
+    for i in range(int(len(distance_test))):
         dataset = distance_test[i]
         print(str(
             i) + " problem = " + dataset + " writing to " + results_dir +

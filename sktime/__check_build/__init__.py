@@ -26,7 +26,7 @@ def raise_build_error(e):
         # Picking up the local install: this will work only if the
         # install is an 'inplace build'
         msg = INPLACE_MSG
-    dir_content = list()
+    dir_content = []
     for i, filename in enumerate(os.listdir(local_dir)):
         if ((i + 1) % 3):
             dir_content.append(filename.ljust(26))

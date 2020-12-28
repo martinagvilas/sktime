@@ -16,10 +16,8 @@ from sktime._build_utils import maybe_cythonize_extensions
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
 
-    libraries = []
     if os.name == 'posix':
-        libraries.append('m')
-
+        libraries = ['m']
     config = Configuration('sktime', parent_package, top_path)
 
     for package in find_packages('sktime'):

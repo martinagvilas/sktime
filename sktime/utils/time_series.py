@@ -111,11 +111,10 @@ def time_series_slope(y):
 
     if len_series < 2:
         return 0
-    else:
-        x = np.arange(len_series)  # time index
-        x_mean = (len_series - 1) / 2  # faster than x.mean()
-        return (np.mean(x * y) - x_mean * np.mean(y)) / (
-                    np.mean(x ** 2) - x_mean ** 2)
+    x = np.arange(len_series)  # time index
+    x_mean = (len_series - 1) / 2  # faster than x.mean()
+    return (np.mean(x * y) - x_mean * np.mean(y)) / (
+                np.mean(x ** 2) - x_mean ** 2)
 
 
 def fit_trend(x, order=0):
@@ -209,7 +208,7 @@ def remove_trend(x, coefs, time_index=None):
         else:
             # validate given time index
             time_index = check_time_index(time_index)
-            if not len(time_index) == x.shape[1]:
+            if len(time_index) != x.shape[1]:
                 raise ValueError(
                     'Length of passed index does not match length of passed x')
 
@@ -251,22 +250,19 @@ def add_trend(x, coefs, time_index=None):
 
     # special case, add mean
     if order == 0:
-        xt = x + coefs
+        return x + coefs
+
+    if time_index is None:
+        n_obs = x.shape[1]
+        time_index = np.arange(n_obs)
 
     else:
-        if time_index is None:
-            n_obs = x.shape[1]
-            time_index = np.arange(n_obs)
+        # validate given time index
+        time_index = check_time_index(time_index)
 
-        else:
-            # validate given time index
-            time_index = check_time_index(time_index)
+        if len(time_index) != x.shape[1]:
+            raise ValueError(
+                'Length of passed index does not match length of passed x')
 
-            if not len(time_index) == x.shape[1]:
-                raise ValueError(
-                    'Length of passed index does not match length of passed x')
-
-        poly_terms = np.vander(time_index, N=order + 1)
-        xt = x + np.dot(poly_terms, coefs.T).T
-
-    return xt
+    poly_terms = np.vander(time_index, N=order + 1)
+    return x + np.dot(poly_terms, coefs.T).T

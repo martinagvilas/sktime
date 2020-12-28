@@ -208,7 +208,7 @@ class SFA(BaseSeriesAsFeaturesTransformer):
         for i in range(X.shape[0]):
             dfts = self._mft(X[i, :])
 
-            bag = dict()
+            bag = {}
             # bag = Dict.empty(key_type=typeof((100,100.0)),
             #                  value_type=types.float64) \
             #     if self.levels > 1 else \
@@ -236,17 +236,16 @@ class SFA(BaseSeriesAsFeaturesTransformer):
                     last_word = word_raw
                     repeat_words = 0
 
-                if self.bigrams:
-                    if window - self.window_size >= 0 and window > 0:
-                        bigram = (words[window - self.window_size]
-                                  << self.word_length) | word_raw
-                        # bigram = _BitWord.create_bigram_word(
-                        #     words[window - self.window_size],
-                        #     word_raw, self.word_length)
+                if self.bigrams and window - self.window_size >= 0 and window > 0:
+                    bigram = (words[window - self.window_size]
+                              << self.word_length) | word_raw
+                    # bigram = _BitWord.create_bigram_word(
+                    #     words[window - self.window_size],
+                    #     word_raw, self.word_length)
 
-                        if self.levels > 1:
-                            bigram = (bigram, 0)
-                        bag[bigram] = bag.get(bigram, 0) + 1
+                    if self.levels > 1:
+                        bigram = (bigram, 0)
+                    bag[bigram] = bag.get(bigram, 0) + 1
 
             if self.save_words:
                 self.words.append(np.array(words))
@@ -400,10 +399,16 @@ class SFA(BaseSeriesAsFeaturesTransformer):
         start_offset = 2 if self.norm else 0
         length = self.dft_length + start_offset + self.dft_length % 2
 
-        phis = np.array([[
-            math.cos(2 * math.pi * (-i) / self.window_size),
-            -math.sin(2 * math.pi * (-i) / self.window_size)]
-            for i in range(0, int(length / 2))]).flatten()
+        phis = np.array(
+            [
+                [
+                    math.cos(2 * math.pi * (-i) / self.window_size),
+                    -math.sin(2 * math.pi * (-i) / self.window_size),
+                ]
+                for i in range(int(length / 2))
+            ]
+        ).flatten()
+
 
         end = max(1, len(series) - self.window_size + 1)
         stds = SFA._calc_incremental_mean_std(series, end, self.window_size)
@@ -460,7 +465,7 @@ class SFA(BaseSeriesAsFeaturesTransformer):
         dim = []
 
         for i in range(len(self.words)):
-            bag = dict()
+            bag = {}
             # bag = bag = Dict.empty(key_type=typeof((100,100.0)),
             #                  value_type=types.float64) \
             #     if self.levels > 1 else \
@@ -486,17 +491,16 @@ class SFA(BaseSeriesAsFeaturesTransformer):
                     last_word = new_word
                     repeat_words = 0
 
-                if self.bigrams:
-                    if window - self.window_size >= 0 and window > 0:
-                        bigram = _BitWord.create_bigram_word(
-                            _BitWord.shorten_word(
-                                self.words[i][window - self.window_size],
-                                self.word_length - word_len),
-                            word, self.word_length)
+                if self.bigrams and window - self.window_size >= 0 and window > 0:
+                    bigram = _BitWord.create_bigram_word(
+                        _BitWord.shorten_word(
+                            self.words[i][window - self.window_size],
+                            self.word_length - word_len),
+                        word, self.word_length)
 
-                        if self.levels > 1:
-                            bigram = (bigram, 0)
-                        bag[bigram] = bag.get(bigram, 0) + 1
+                    if self.levels > 1:
+                        bigram = (bigram, 0)
+                    bag[bigram] = bag.get(bigram, 0) + 1
 
             dim.append(
                 pd.Series(bag) if self.return_pandas_data_series else bag)
