@@ -131,18 +131,21 @@ class BaseTask:
         if self.target not in metadata.columns:
             raise ValueError(f"Target: {self.target} not found in metadata")
 
-        if self.features is not None:
-            if not np.all(self.features.isin(metadata.columns)):
-                raise ValueError(
-                    f"Features: {list(self.features)} not found in metadata")
+        if self.features is not None and not np.all(
+            self.features.isin(metadata.columns)
+        ):
+            raise ValueError(
+                f"Features: {list(self.features)} not found in metadata")
 
         if isinstance(self, (TSCTask, TSRTask)):
-            if self.features is None:
-                if len(metadata.columns.drop(self.target)) == 0:
-                    raise ValueError(
-                        f"For task of type: {type(self)}, at least one "
-                        f"feature must be given, "
-                        f"but found none")
+            if (
+                self.features is None
+                and len(metadata.columns.drop(self.target)) == 0
+            ):
+                raise ValueError(
+                    f"For task of type: {type(self)}, at least one "
+                    f"feature must be given, "
+                    f"but found none")
 
             if metadata.shape[0] <= 1:
                 raise ValueError(
@@ -178,9 +181,8 @@ class BaseTask:
         params : mapping of string to any
             Parameter names mapped to their values.
         """
-        out = {key: getattr(self, key, None) for key in
+        return {key: getattr(self, key, None) for key in
                self._get_param_names()}
-        return out
 
     def __repr__(self):
         class_name = self.__class__.__name__

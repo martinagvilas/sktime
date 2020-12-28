@@ -95,8 +95,7 @@ def convert_list_to_dataframe(list_to_convert):
     df = pd.DataFrame()
     for i in range(len(list_to_convert)):
         inst = list_to_convert[i]
-        data = []
-        data.append(pd.Series(inst))
+        data = [pd.Series(inst)]
         df[i] = data
 
     return df

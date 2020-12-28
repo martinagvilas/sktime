@@ -132,14 +132,10 @@ def _enforce_X_univariate(X):
 
 
 def _enforce_min_instances(x, min_instances=1):
-    if hasattr(x, "shape"):
-        n_instances = x.shape[0]
-    else:
+    if not hasattr(x, "shape"):
         x = np.asarray(x)
-        n_instances = x.shape[0]
-
-    if min_instances > 0:
-        if n_instances < min_instances:
-            raise ValueError(
-                f"Found array with {n_instances} instance(s) "
-                f"but a minimum of {min_instances} is required.")
+    n_instances = x.shape[0]
+    if min_instances > 0 and n_instances < min_instances:
+        raise ValueError(
+            f"Found array with {n_instances} instance(s) "
+            f"but a minimum of {min_instances} is required.")

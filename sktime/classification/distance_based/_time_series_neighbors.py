@@ -350,32 +350,31 @@ class KNeighborsTimeSeriesClassifier(_KNeighborsClassifier, BaseClassifier):
 
         if not query_is_train:
             return result
+        # If the query data is the same as the indexed data, we would like
+        # to ignore the first nearest neighbor of every sample, i.e
+        # the sample itself.
+        if return_distance:
+            dist, neigh_ind = result
         else:
-            # If the query data is the same as the indexed data, we would like
-            # to ignore the first nearest neighbor of every sample, i.e
-            # the sample itself.
-            if return_distance:
-                dist, neigh_ind = result
-            else:
-                neigh_ind = result
+            neigh_ind = result
 
-            sample_mask = neigh_ind != sample_range
+        sample_mask = neigh_ind != sample_range
 
-            # Corner case: When the number of duplicates are more
-            # than the number of neighbors, the first NN will not
-            # be the sample, but a duplicate.
-            # In that case mask the first duplicate.
-            dup_gr_nbrs = np.all(sample_mask, axis=1)
-            sample_mask[:, 0][dup_gr_nbrs] = False
+        # Corner case: When the number of duplicates are more
+        # than the number of neighbors, the first NN will not
+        # be the sample, but a duplicate.
+        # In that case mask the first duplicate.
+        dup_gr_nbrs = np.all(sample_mask, axis=1)
+        sample_mask[:, 0][dup_gr_nbrs] = False
 
-            neigh_ind = np.reshape(
-                neigh_ind[sample_mask], (n_samples, n_neighbors - 1))
+        neigh_ind = np.reshape(
+            neigh_ind[sample_mask], (n_samples, n_neighbors - 1))
 
-            if return_distance:
-                dist = np.reshape(
-                    dist[sample_mask], (n_samples, n_neighbors - 1))
-                return dist, neigh_ind
-            return neigh_ind
+        if return_distance:
+            dist = np.reshape(
+                dist[sample_mask], (n_samples, n_neighbors - 1))
+            return dist, neigh_ind
+        return neigh_ind
 
     def predict(self, X):
         """Predict the class labels for the provided data

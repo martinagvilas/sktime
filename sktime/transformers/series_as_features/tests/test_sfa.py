@@ -92,9 +92,9 @@ def test_sfa_anova():
     word_length = 6
     alphabet_size = 4
 
+    # print("SFA with ANOVA one-sided test")
+    window_size = 32
     for binning in ["information-gain", "equi-depth"]:
-        # print("SFA with ANOVA one-sided test")
-        window_size = 32
         p = SFA(word_length=word_length,
                 anova=True,
                 alphabet_size=alphabet_size,

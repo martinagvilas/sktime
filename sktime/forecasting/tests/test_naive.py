@@ -64,8 +64,7 @@ def test_strategy_last_seasonal(fh, sp):
 @pytest.mark.parametrize("sp", TEST_SPS)
 @pytest.mark.parametrize("window_length", [*TEST_WINDOW_LENGTHS, None])
 def test_strategy_mean_seasonal(fh, sp, window_length):
-    if ((window_length is not None and window_length > sp) or
-            (window_length is None)):
+    if window_length > sp or window_length is None:
         f = NaiveForecaster(strategy="mean", sp=sp,
                             window_length=window_length)
         f.fit(y_train)

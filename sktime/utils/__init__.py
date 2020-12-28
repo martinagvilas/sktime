@@ -52,9 +52,7 @@ def all_estimators(estimator_type=None):
     def is_abstract(c):
         if not (hasattr(c, "__abstractmethods__")):
             return False
-        if not len(c.__abstractmethods__):
-            return False
-        return True
+        return bool(len(c.__abstractmethods__))
 
     all_classes = []
     modules_to_ignore = {"tests", "setup", "contrib"}

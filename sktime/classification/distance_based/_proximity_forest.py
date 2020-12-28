@@ -99,7 +99,7 @@ class _CachedTransformer(BaseSeriesAsFeaturesTransformer):
                 cached_instances[index] = self.cache[index]
             except Exception:
                 uncached_indices.append(index)
-        if len(uncached_indices) > 0:
+        if uncached_indices:
             uncached_instances = X.loc[uncached_indices, :]
             transformed_uncached_instances = \
                 self.transformer.fit_transform(uncached_instances)
@@ -604,8 +604,7 @@ def pick_rand_param_perm_from_list(params, random_state):
     """
     #
     param_pool = random_state.choice(params)
-    permutation = pick_rand_param_perm_from_dict(param_pool, random_state)
-    return permutation
+    return pick_rand_param_perm_from_dict(param_pool, random_state)
 
 
 def best_of_n_stumps(n):
@@ -642,7 +641,7 @@ def best_of_n_stumps(n):
         """
         stumps = []
         # for n stumps
-        for index in range(n):
+        for _ in range(n):
             # duplicate tree configuration
             stump = ProximityStump(
                 random_state=proximity.random_state,

@@ -73,7 +73,7 @@ def calculate_distance_profile(dot_prod, q_mean, q_std, t_mean, t_std, q_len,
     """
 
     d = [2 * q_len * (1 - ((dot_prod[i] - q_len * q_mean * t_mean[i]) / (
-                q_len * q_std * t_std[i]))) for i in range(0, n_t_subs)]
+                q_len * q_std * t_std[i]))) for i in range(n_t_subs)]
     d = np.absolute(d)
     d = np.sqrt(d)
 
@@ -113,11 +113,11 @@ def stomp_ab(ts1, ts2, m):
     n_ts2_subs = len2 - m + 1
 
     # Compute the mean and standard deviation
-    ts1_mean = [np.mean(ts1[i:i + m]) for i in range(0, n_ts1_subs)]
-    ts1_std = [np.std(ts1[i:i + m]) for i in range(0, n_ts1_subs)]
+    ts1_mean = [np.mean(ts1[i:i + m]) for i in range(n_ts1_subs)]
+    ts1_std = [np.std(ts1[i:i + m]) for i in range(n_ts1_subs)]
 
-    ts2_mean = [np.mean(ts2[i:i + m]) for i in range(0, n_ts2_subs)]
-    ts2_std = [np.std(ts2[i:i + m]) for i in range(0, n_ts2_subs)]
+    ts2_mean = [np.mean(ts2[i:i + m]) for i in range(n_ts2_subs)]
+    ts2_std = [np.std(ts2[i:i + m]) for i in range(n_ts2_subs)]
 
     # Compute the dot products between the first ts2 subsequence and every
     # ts1 subsequence
@@ -185,9 +185,4 @@ def mpdist(ts1, ts2, m):
     sorted_mp = np.sort(
         join_mp)  # sort the join matrix profile in ascending order
 
-    if len(sorted_mp) > k:
-        mpdist = sorted_mp[k]
-    else:
-        mpdist = sorted_mp[len(sorted_mp) - 1]
-
-    return mpdist
+    return sorted_mp[k] if len(sorted_mp) > k else sorted_mp[len(sorted_mp) - 1]

@@ -51,7 +51,7 @@ def test_shape_descriptor_functions(bad_sdfs):
     X = generate_df_from_array(np.ones(10), n_rows=10, n_cols=1)
     y = np.zeros(10)
 
-    if not len(bad_sdfs) == 2:
+    if len(bad_sdfs) != 2:
         with pytest.raises(ValueError):
             ShapeDTW(shape_descriptor_function="compound",
                      shape_descriptor_functions=bad_sdfs).fit(X, y)

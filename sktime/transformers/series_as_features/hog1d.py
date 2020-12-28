@@ -188,18 +188,17 @@ class HOG1DTransformer(BaseSeriesAsFeaturesTransformer):
         ------
         ValueError or TypeError if a parameters input is invalid.
         """
-        if isinstance(self.num_intervals, int):
-            if self.num_intervals <= 0:
-                raise ValueError("num_intervals must have \
-                                  the value of at least 1")
-            if self.num_intervals > num_atts:
-                raise ValueError("num_intervals cannot be higher \
-                                  than subsequence_length")
-        else:
+        if not isinstance(self.num_intervals, int):
             raise TypeError("num_intervals must be an 'int'. \
                             Found '" + type(self.num_intervals).__name__ +
                             "' instead.")
 
+        if self.num_intervals <= 0:
+            raise ValueError("num_intervals must have \
+                                  the value of at least 1")
+        if self.num_intervals > num_atts:
+            raise ValueError("num_intervals cannot be higher \
+                                  than subsequence_length")
         if isinstance(self.num_bins, int):
             if self.num_bins <= 0:
                 raise ValueError("num_bins must have the value of \

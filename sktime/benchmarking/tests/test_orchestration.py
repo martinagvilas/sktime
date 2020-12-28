@@ -38,11 +38,10 @@ DATAPATH = os.path.join(REPOPATH, "datasets/data/")
 
 def make_reduction_pipeline(estimator):
     """Helper function to use tabular estimators in time series setting"""
-    pipeline = Pipeline([
+    return Pipeline([
         ("transform", Tabularizer()),
         ("clf", estimator)
     ])
-    return pipeline
 
 
 # simple test of orchestration and metric evaluation

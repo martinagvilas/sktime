@@ -92,12 +92,10 @@ class SlopeTransformer(BaseSeriesAsFeaturesTransformer):
 
         # Firstly, split the time series into approx equal length intervals
         splitTimeSeries = self._split_time_series(X)
-        gradients = []
-
-        for x in range(len(splitTimeSeries)):
-            gradients.append(self._get_gradient(splitTimeSeries[x]))
-
-        return gradients
+        return [
+            self._get_gradient(splitTimeSeries[x])
+            for x in range(len(splitTimeSeries))
+        ]
 
     def _get_gradient(self, Y):
 
@@ -183,14 +181,14 @@ class SlopeTransformer(BaseSeriesAsFeaturesTransformer):
         ------
         ValueError or TypeError if a parameters input is invalid.
         """
-        if isinstance(self.num_intervals, int):
-            if self.num_intervals <= 0:
-                raise ValueError("num_intervals must have the value \
-                                  of at least 1")
-            if self.num_intervals > n_timepoints:
-                raise ValueError("num_intervals cannot be higher than \
-                                  subsequence_length")
-        else:
+        if not isinstance(self.num_intervals, int):
             raise TypeError("num_intervals must be an 'int'. Found '"
                             + type(self.num_intervals).__name__ +
                             "'instead.")
+
+        if self.num_intervals <= 0:
+            raise ValueError("num_intervals must have the value \
+                                  of at least 1")
+        if self.num_intervals > n_timepoints:
+            raise ValueError("num_intervals cannot be higher than \
+                                  subsequence_length")

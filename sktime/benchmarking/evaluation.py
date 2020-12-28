@@ -153,7 +153,7 @@ class Evaluator:
         metric_name = self._validate_metric_name(metric_name)
         column = self._get_column_name(metric_name, suffix="mean")
 
-        ranked = (self.metrics_by_strategy_dataset
+        return (self.metrics_by_strategy_dataset
                   .loc[:, ["dataset", "strategy", column]]
                   .set_index("strategy")
                   .groupby("dataset")
@@ -163,7 +163,6 @@ class Evaluator:
                   .mean()
                   .rename(columns={column: f"{metric_name}_mean_rank"})
                   .reset_index())
-        return ranked
 
     def t_test(self, metric_name=None):
         """
@@ -307,10 +306,8 @@ class Evaluator:
 
         bonfer_test_reshaped = bonfer_test.values.reshape(estim_1, estim_2)
 
-        bonfer_df = pd.DataFrame(bonfer_test_reshaped, index=idx_estim_1,
+        return pd.DataFrame(bonfer_test_reshaped, index=idx_estim_1,
                                  columns=idx_estim_2)
-
-        return bonfer_df
 
     def wilcoxon_test(self, metric_name=None):
         """http://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test
@@ -405,9 +402,8 @@ class Evaluator:
         strategy_dict = pd.DataFrame(metrics_per_estimator_dataset)
         strategy_dict = strategy_dict.melt(var_name="groups",
                                            value_name="values")
-        nemenyi = posthoc_nemenyi(strategy_dict, val_col="values",
+        return posthoc_nemenyi(strategy_dict, val_col="values",
                                   group_col="groups")
-        return nemenyi
 
     def plot_critical_difference_diagram(self, metric_name=None, alpha=0.1):
         """Plot critical difference diagrams
@@ -493,8 +489,11 @@ class Evaluator:
                  np.tile([100, 105, 100], (1, n_strategies)).flatten(),
                  linewidth=2, color="black")
         tics = np.tile(
-            (np.array(range(0, n_strategies - 1)) / (
-                    n_strategies - 1)) + 0.5 / (n_strategies - 1), (3, 1))
+            (np.array(range(n_strategies - 1)) / (n_strategies - 1))
+            + 0.5 / (n_strategies - 1),
+            (3, 1),
+        )
+
         plt.plot(tics.flatten("F"),
                  np.tile([100, 102.5, 100], (1, n_strategies - 1)).flatten(),
                  linewidth=1, color="black")

@@ -61,9 +61,9 @@ class PAA(BaseSeriesAsFeaturesTransformer):
         self._check_parameters(num_atts)
 
         # On each dimension, perform PAA
-        dataFrames = []
-        for x in col_names:
-            dataFrames.append(self._perform_paa_along_dim(pd.DataFrame(X[x])))
+        dataFrames = [
+            self._perform_paa_along_dim(pd.DataFrame(X[x])) for x in col_names
+        ]
 
         # Combine the dimensions together
         result = pd.concat(dataFrames, axis=1, sort=False)
@@ -125,13 +125,13 @@ class PAA(BaseSeriesAsFeaturesTransformer):
         ------
         ValueError or TypeError if a parameters input is invalid.
         """
-        if isinstance(self.num_intervals, int):
-            if self.num_intervals <= 0:
-                raise ValueError("num_intervals must have the \
-                                  value of at least 1")
-            if self.num_intervals > num_atts:
-                raise ValueError("num_intervals cannot be higher \
-                                  than the time series length.")
-        else:
+        if not isinstance(self.num_intervals, int):
             raise TypeError("num_intervals must be an 'int'. Found '" +
                             type(self.num_intervals).__name__ + "' instead.")
+
+        if self.num_intervals <= 0:
+            raise ValueError("num_intervals must have the \
+                                  value of at least 1")
+        if self.num_intervals > num_atts:
+            raise ValueError("num_intervals cannot be higher \
+                                  than the time series length.")

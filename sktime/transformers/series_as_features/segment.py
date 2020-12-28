@@ -351,9 +351,7 @@ class SlidingWindowSegmenter(BaseSeriesAsFeaturesTransformer):
         df = pd.DataFrame()
         for i in range(len(subsequences)):
             inst = subsequences[i]
-            data = []
-            for j in range(len(inst)):
-                data.append(pd.Series(inst[j]))
+            data = [pd.Series(inst[j]) for j in range(len(inst))]
             df[i] = data
 
         return df.transpose()

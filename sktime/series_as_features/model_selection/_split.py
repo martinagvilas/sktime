@@ -63,12 +63,10 @@ class PresplitFilesCV:
         # split first, then reshuffle and apply cv,
         # note that test sets may overlap with the presplit file test set
         if self.cv is not None:
-            for train, test in self.cv.split(idx, y=y):
-                yield train, test
+            yield from self.cv.split(idx, y=y)
 
     def get_n_splits(self):
-        n_splits = 1 if self.cv is None else 1 + self.cv.get_n_splits()
-        return n_splits
+        return 1 if self.cv is None else 1 + self.cv.get_n_splits()
 
 
 class SingleSplit:

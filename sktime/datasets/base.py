@@ -55,9 +55,8 @@ def _load_dataset(name, split, return_X_y):
     # Return appropriately
     if return_X_y:
         return X, y
-    else:
-        X['class_val'] = pd.Series(y)
-        return X
+    X['class_val'] = pd.Series(y)
+    return X
 
 
 def load_gunpoint(split=None, return_X_y=False):

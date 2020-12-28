@@ -52,11 +52,11 @@ class ElasticEnsemblePostProcess:
                 third_line = lines[2].split(",")
                 self.train_accs_by_classifier[c_id] = float(third_line[0].strip())
                 this_class_vals = third_line[-1].strip().replace("[","").replace("]","").split(" ")
-                this_num_classes = len(this_class_vals)
                 this_num_ins = len(lines)-3
                 if class_vals is None:
                     class_vals = this_class_vals
                     self.classes_ = np.array(this_class_vals)
+                    this_num_classes = len(this_class_vals)
                     num_classes = this_num_classes
                     num_ins = this_num_ins
 

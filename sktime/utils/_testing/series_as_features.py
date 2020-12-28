@@ -18,7 +18,7 @@ def _make_series_as_features_X(y, n_columns, n_timepoints,
     n_instances = len(y)
     rng = check_random_state(random_state)
     columns = []
-    for i in range(n_columns):
+    for _ in range(n_columns):
         rows = []
         for j in range(n_instances):
             # we use the y value for the mean of the generated time series

@@ -90,11 +90,14 @@ class NaiveForecaster(OptionalForecastingHorizonMixin,
 
         elif self.strategy == "mean":
             # check window length is greater than sp for seasonal mean
-            if self.window_length is not None and self.sp != 1:
-                if self.window_length < self.sp:
-                    raise ValueError(f"The `window_length`: "
-                                     f"{self.window_length} is smaller than "
-                                     f"`sp`: {self.sp}.")
+            if (
+                self.window_length is not None
+                and self.sp != 1
+                and self.window_length < self.sp
+            ):
+                raise ValueError(f"The `window_length`: "
+                                 f"{self.window_length} is smaller than "
+                                 f"`sp`: {self.sp}.")
             self.window_length_ = check_window_length(self.window_length)
             self.sp_ = check_sp(self.sp)
 

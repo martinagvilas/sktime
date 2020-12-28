@@ -383,10 +383,10 @@ class BaseGridSearch(BaseForecaster):
 
         def evaluate_candidates(candidate_params):
             candidate_params = list(candidate_params)
-            n_candidates = len(candidate_params)
-
             if self.verbose > 0:
                 n_splits = cv.get_n_splits(y_train)
+                n_candidates = len(candidate_params)
+
                 print("Fitting {0} folds for each of {1} candidates,"
                       " totalling {2} fits".format(n_splits, n_candidates,
                                                    n_candidates * n_splits))

@@ -324,8 +324,8 @@ def check_fit_idempotent(Estimator):
     fit_args = _make_args(estimator, "fit")
     estimator.fit(*fit_args)
 
-    results = dict()
-    args = dict()
+    results = {}
+    args = {}
     for method in NON_STATE_CHANGING_METHODS:
         if hasattr(estimator, method):
             args[method] = _make_args(estimator, method)
@@ -409,8 +409,8 @@ def check_persistence_via_pickle(Estimator):
     estimator.fit(*fit_args)
 
     # Generate results before pickling
-    results = dict()
-    args = dict()
+    results = {}
+    args = {}
     for method in NON_STATE_CHANGING_METHODS:
         if hasattr(estimator, method):
             args[method] = _make_args(estimator, method)
@@ -423,6 +423,6 @@ def check_persistence_via_pickle(Estimator):
     unpickled_estimator = pickle.loads(pickled_estimator)
 
     # Compare against results after pickling
-    for method in results:
+    for method, value in results.items():
         unpickled_result = getattr(unpickled_estimator, method)(*args[method])
-        _assert_almost_equal(results[method], unpickled_result)
+        _assert_almost_equal(value, unpickled_result)

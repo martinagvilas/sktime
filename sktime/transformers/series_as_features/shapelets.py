@@ -632,16 +632,16 @@ class ShapeletTransform(BaseSeriesAsFeaturesTransformer):
         output = np.zeros([len(_X), len(self.shapelets)], dtype=np.float32, )
 
         # for the i^th series to transform
-        for i in range(0, len(_X)):
+        for i in range(len(_X)):
             this_series = _X[i]
 
             # get the s^th shapelet
-            for s in range(0, len(self.shapelets)):
+            for s in range(len(self.shapelets)):
                 # find distance between this series and each shapelet
                 min_dist = np.inf
                 this_shapelet_length = self.shapelets[s].length
 
-                for start_pos in range(0, len(
+                for start_pos in range(len(
                         this_series[0]) - this_shapelet_length + 1):
                     comparison = ShapeletTransform.zscore(
                         this_series[:, start_pos:(start_pos +
@@ -693,7 +693,7 @@ class ShapeletTransform(BaseSeriesAsFeaturesTransformer):
         total_all = total_num_this_class + total_num_other_class
 
         # evaluate each split point
-        for split in range(0, len(orderline) - 1):
+        for split in range(len(orderline) - 1):
             next_class = orderline[split][1]  # +1 if this class, -1 if other
             if next_class > 0:
                 count_this_class += 1
@@ -738,7 +738,7 @@ class ShapeletTransform(BaseSeriesAsFeaturesTransformer):
                      num_to_add_other_class)
 
         # evaluate each split point
-        for split in range(0, len(orderline) - 1):
+        for split in range(len(orderline) - 1):
             next_class = orderline[split][1]  # +1 if this class, -1 if other
             if next_class > 0:
                 count_this_class += 1
@@ -830,8 +830,8 @@ class ShapeletTransform(BaseSeriesAsFeaturesTransformer):
     @staticmethod
     def euclidean_distance_early_abandon(u, v, min_dist):
         sum_dist = 0
-        for i in range(0, len(u[0])):
-            for j in range(0, len(u)):
+        for i in range(len(u[0])):
+            for j in range(len(u)):
                 u_v = u[j][i] - v[j][i]
                 sum_dist += np.dot(u_v, u_v)
                 if sum_dist >= min_dist:
@@ -987,7 +987,7 @@ def write_transformed_data_to_arff(transform, labels, file_name):
         # Headers
         f.write("@Relation Shapelets" + file_name.split('/')[-1].split('_')[
             0] + '\n\n')
-        for i in range(0, num_shapelets):
+        for i in range(num_shapelets):
             f.write("@attribute Shapelet_" + str(i) + " numeric\n")
         f.write("@attribute target {" + ",".join(unique_labels) + "}\n")
         f.write("\n@data\n")
@@ -1015,7 +1015,7 @@ def write_shapelets_to_csv(shapelets, data, dim_to_use, time, file_name):
     data = data.iloc[:, dim_to_use]
 
     data_aux = [[]] * len(data)
-    for i in range(0, len(data)):
+    for i in range(len(data)):
         data_aux[i] = np.array(
             [np.asarray(x) for x in np.asarray(data.iloc[i, :])])
     data = data_aux.copy()
@@ -1032,7 +1032,7 @@ def write_shapelets_to_csv(shapelets, data, dim_to_use, time, file_name):
             f.write(str(j.info_gain) + "," + str(j.series_id) + "," + ''.join(
                 str(j.dims)).replace(', ', ':') + "," + str(
                 j.start_pos) + "," + str(j.length) + "\n")
-            for k in range(0, len(dim_to_use)):
+            for k in range(len(dim_to_use)):
                 f.write(
                     ",".join(map(
                         str,

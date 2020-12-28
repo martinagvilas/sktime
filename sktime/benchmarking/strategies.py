@@ -114,14 +114,13 @@ class BaseStrategy(BaseEstimator):
 
         # Determine required estimator type from strategy case
         # TODO replace with strategy - estimator type registry lookup
-        if hasattr(self, '_traits'):
-            required = self._traits["required_estimator_type"]
-            if any(estimator_type not in ESTIMATOR_TYPES for estimator_type in
-                   required):
-                raise AttributeError("Required estimator type unknown")
-        else:
+        if not hasattr(self, '_traits'):
             raise AttributeError("Required estimator type not found")
 
+        required = self._traits["required_estimator_type"]
+        if any(estimator_type not in ESTIMATOR_TYPES for estimator_type in
+               required):
+            raise AttributeError("Required estimator type unknown")
         # # Check estimator compatibility with required type
         # If pipeline, check compatibility of final estimator
         if isinstance(estimator, Pipeline):

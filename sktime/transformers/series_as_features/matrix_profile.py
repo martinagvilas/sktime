@@ -78,7 +78,7 @@ def calculate_distance_profile(dot_prod, q_mean, q_std, t_mean, t_std, q_len,
     """
 
     d = [2 * q_len * (1 - ((dot_prod[i] - q_len * q_mean * t_mean[i]) / (
-            q_len * q_std * t_std[i]))) for i in range(0, n_t_subs)]
+            q_len * q_std * t_std[i]))) for i in range(n_t_subs)]
     d = np.absolute(d)
     d = np.sqrt(d)
 
@@ -119,7 +119,7 @@ def minimum_distance(mp, ip, dp, i, m, dp_len):
     min_value = float("inf")
     min_index = -1
 
-    for k in range(0, dp_len):
+    for k in range(dp_len):
         if dp[k] < min_value and (k < i - m / 2 or k > i + m / 2):
             min_value = dp[k]
             min_index = k
@@ -157,8 +157,8 @@ def stomp_self(ts, m):
     n_subs = ts_len - m + 1
 
     # Compute the mean and standard deviation
-    ts_mean = [np.mean(ts[i:i + m]) for i in range(0, n_subs)]
-    ts_std = [np.std(ts[i:i + m]) for i in range(0, n_subs)]
+    ts_mean = [np.mean(ts[i:i + m]) for i in range(n_subs)]
+    ts_std = [np.std(ts[i:i + m]) for i in range(n_subs)]
 
     # Compute the dot products between the first subsequence and every other
     # subsequence
@@ -235,6 +235,5 @@ class MatrixProfile(BaseSeriesAsFeaturesTransformer):
         tabulariser = Tabularizer()
         X = tabulariser.fit_transform(X)
 
-        Xt = pd.DataFrame(stomp_self(np.array([X.iloc[i]]), self.m) for i in
+        return pd.DataFrame(stomp_self(np.array([X.iloc[i]]), self.m) for i in
                           range(n_instances))
-        return Xt

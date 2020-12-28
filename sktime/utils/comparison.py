@@ -15,10 +15,7 @@ def arg_bests(array, comparator):
 
 # pick values from array at given indices
 def pick_from_indices(array, indices):
-    picked = []
-    for index in indices:
-        picked.append(array[index])
-    return picked
+    return [array[index] for index in indices]
 
 
 # find best values in array

@@ -88,11 +88,7 @@ def check_openmp_support():
 
             # Link test program
             extra_preargs = os.getenv('LDFLAGS', None)
-            if extra_preargs is not None:
-                extra_preargs = extra_preargs.split(" ")
-            else:
-                extra_preargs = []
-
+            extra_preargs = extra_preargs.split(" ") if extra_preargs is not None else []
             objects = glob.glob(
                 os.path.join('objects', '*' + ccompiler.obj_extension))
             ccompiler.link_executable(objects, 'test_openmp',

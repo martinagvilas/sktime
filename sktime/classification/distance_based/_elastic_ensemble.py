@@ -332,12 +332,8 @@ class ElasticEnsemble(BaseClassifier):
         output_probas = []
         train_sum = 0
 
-        for c in range(0, len(self.estimators_)):
-            if (self.distance_measures[c] == ddtw_c
-                    or self.distance_measures[c] == wddtw_c):
-                test_X_to_use = der_X
-            else:
-                test_X_to_use = X
+        for c in range(len(self.estimators_)):
+            test_X_to_use = der_X if self.distance_measures[c] in [ddtw_c, wddtw_c] else X
             this_train_acc = self.train_accs_by_classifier[c]
             this_probas = np.multiply(
                 self.estimators_[c].predict_proba(test_X_to_use),

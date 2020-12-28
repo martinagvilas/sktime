@@ -117,10 +117,11 @@ class DerivativeSlopeTransformer(BaseSeriesAsFeaturesTransformer):
     def row_wise_get_der(X):
 
         def get_der(x):
-            der = []
-            for i in range(1, len(x) - 1):
-                der.append(
-                    ((x[i] - x[i - 1]) + ((x[i + 1] - x[i - 1]) / 2)) / 2)
+            der = [
+                ((x[i] - x[i - 1]) + ((x[i + 1] - x[i - 1]) / 2)) / 2
+                for i in range(1, len(x) - 1)
+            ]
+
             return pd.Series([der[0]] + der + [der[-1]])
 
         return [get_der(x) for x in X]
@@ -192,7 +193,8 @@ class RandomIntervalFeatureExtractor(RandomIntervalSegmenter):
         if self.features is None:
             features = [np.mean]
         elif isinstance(self.features, list) and all(
-                [callable(func) for func in self.features]):
+            callable(func) for func in self.features
+        ):
             features = self.features
         else:
             raise ValueError(

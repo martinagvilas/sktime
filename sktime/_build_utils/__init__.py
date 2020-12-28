@@ -28,10 +28,7 @@ def build_from_c_and_cpp_files(extensions):
         for sfile in extension.sources:
             path, ext = os.path.splitext(sfile)
             if ext in ('.pyx', '.py'):
-                if extension.language == 'c++':
-                    ext = '.cpp'
-                else:
-                    ext = '.c'
+                ext = '.cpp' if extension.language == 'c++' else '.c'
                 sfile = path + ext
             sources.append(sfile)
         extension.sources = sources

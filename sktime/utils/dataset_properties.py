@@ -24,8 +24,8 @@ def stdp(X):
     num_instances = X.shape[0]
     num_dimensions = X.shape[1]
     num_values = 0
-    for instance_index in range(0, num_instances):
-        for dimension_index in range(0, num_dimensions):
+    for instance_index in range(num_instances):
+        for dimension_index in range(num_dimensions):
             instance = X.iloc[instance_index, dimension_index]
             for value in instance:
                 num_values += 1
@@ -34,18 +34,15 @@ def stdp(X):
                             value ** 2)  # todo missing values NaN messes
                 # this up!
     mean = sum / num_values
-    stdp = np.math.sqrt(sum_sq / num_values - mean ** 2)
-    return stdp
+    return np.math.sqrt(sum_sq / num_values - mean ** 2)
 
 
 # convert given instances and class labels into dict of class label mapped
 # to instances
 def bin_instances_by_class(X, class_labels):
-    bins = {}
-    for class_label in np.unique(class_labels):
-        bins[class_label] = []
+    bins = {class_label: [] for class_label in np.unique(class_labels)}
     num_instances = X.shape[0]
-    for instance_index in range(0, num_instances):
+    for instance_index in range(num_instances):
         instance = X.iloc[instance_index, :]
         class_label = class_labels[instance_index]
         instances_bin = bins[class_label]
@@ -58,7 +55,7 @@ def bin_instances_by_class(X, class_labels):
 def max_instance_dimension_length(X, dimension):
     num_instances = X.shape[0]
     max = -1
-    for instance_index in range(0, num_instances):
+    for instance_index in range(num_instances):
         instance = X.iloc[instance_index, dimension]
         if len(instance) > max:
             max = len(instance)
